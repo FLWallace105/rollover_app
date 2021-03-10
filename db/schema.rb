@@ -10,9 +10,56 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2021_03_10_222026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "sub_collection_sizes", force: :cascade do |t|
+    t.bigint "subscription_id"
+    t.string "product_collection"
+    t.string "gloves"
+    t.string "leggings"
+    t.string "tops"
+    t.string "sports_bra"
+    t.string "sports_jacket"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["subscription_id"], name: "index_sub_collection_sizes_on_subscription_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "subscription_id"
+    t.bigint "address_id"
+    t.bigint "customer_id"
+    t.string "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "next_charge_scheduled_at"
+    t.string "product_title"
+    t.string "variant_title"
+    t.decimal "price", precision: 10, scale: 2
+    t.integer "quantity"
+    t.string "status"
+    t.bigint "recharge_product_id"
+    t.bigint "shopify_product_id"
+    t.bigint "shopify_variant_id"
+    t.string "sku"
+    t.string "order_interval_unit"
+    t.string "order_interval_frequency"
+    t.string "charge_interval_frequency"
+    t.integer "order_day_of_month"
+    t.integer "order_day_of_week"
+    t.jsonb "properties"
+    t.integer "expire_after_specific_number_of_charges"
+    t.integer "has_queued_charges"
+    t.boolean "is_prepaid", default: false
+    t.boolean "is_skippable", default: false
+    t.boolean "is_swappable", default: false
+    t.integer "max_retries_reached"
+    t.boolean "sku_override", default: false
+    t.string "product_collection"
+    t.index ["subscription_id"], name: "index_subscriptions_on_subscription_id"
+  end
 
 end

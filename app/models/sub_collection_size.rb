@@ -1,0 +1,2 @@
+class SubCollectionSize < ApplicationRecord
+end
