@@ -7,5 +7,10 @@ task get_all_recharge_subs: :environment do |t|
 
 end
 
+desc 'get all recharge orders next month'
+task get_all_recharge_orders_next_month do |t|
+    RechargeOrdersJob.perform_later
+end
+
 
 end
