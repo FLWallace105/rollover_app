@@ -1,0 +1,30 @@
+<h1>Rollover Application</h1>
+<hr>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <h2>Refresh Shopify Cache</h2>
+      <p>This action will pull down all products and variants and set up in the local database the products that are eligible to be in the pool for allocating customers with an 'Ellie Picks' subscription. You should run this when new products have been added to Ellie in Shopify and you want to include them in the list for possible allocation for the 'Ellie Picks' subscription. Otherwise there is no need to run this job. </p>
+      <p>
+        
+      </p>
+    </div>
+    <div class="col-md-3">
+      <h2>Pull Recharge Subscriptions</h2>
+      <p>This will pull the ReCharge subscriptions manually, down from ReCharge ('Ellie Picks' subscriptions only). The only time you want to run this is when you want to run the allocation process manually not by a scheduled background job. </p>
+      <p>   
+        <%= link_to 'Run »', recharge_subscriptions_path, :class => "btn btn-secondary", method: :post %>      
+      </p>
+    </div>
+    <div class="col-md-3">
+      <h2>Pull Recharge Orders</h2>
+      <p>This will pull the ReCharge orders manually, down from ReCharge ('Ellie Picks' orders only). The only time you want to run this is when you want to run the allocation process manually not by a scheduled background job. </p>
+      <p>
+        <%= link_to 'Run »', recharge_orders_path, :class => "btn btn-secondary", method: :post %>
+      </p>
+    </div>
+    
+  </div>
+  <hr>
+</div>
