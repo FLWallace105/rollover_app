@@ -8,5 +8,7 @@ Rails.application.routes.draw do
   resources :recharge_subscriptions, only: :create
   resources :recharge_orders, only: :create
 
+  resources :selection_set, only: [:index, :create, :show]
+
   mount Resque::Server.new, :at => "/resque"
 end

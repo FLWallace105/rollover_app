@@ -1,0 +1,30 @@
+<h1>Select Subs or Orders for Updating</h1>
+<hr>
+
+<div class="container">
+<p>Some text here</p>
+
+
+<%= form_for :selection_set, url: "selection_set/create" do |form| %>
+  
+  <%= form.radio_button :selection_set_type, 'monthly_sub' %>
+  <%= form.label :select_set_type_monthly_sub, "Monthly Subscription" %><br>
+  
+  
+  
+  <%= form.radio_button :selection_set_type, 'prepaid_sub_no_orders' %>
+  <%= form.label :select_set_type_prepaid_sub_no_orders, "Prepaid Subscription No Orders" %><br>
+  
+  
+  
+  <%= form.radio_button :selection_set_type, 'prepaid_order' %>
+  <%= form.label :select_set_type_prepaid_order, "Prepaid Orders QUEUED Next Month"  %><br>
+  
+  
+  <%= form.submit  %>
+
+        
+  
+<% end  %>
+
+</div>
