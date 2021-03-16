@@ -10,10 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_10_222026) do
+ActiveRecord::Schema.define(version: 2021_03_12_235235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "customer_id"
+    t.string "email"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "product_collection"
+    t.string "leggings"
+    t.string "tops"
+    t.string "sports_bra"
+    t.string "sports_jacket"
+    t.string "gloves"
+    t.boolean "is_prepaid", default: false
+    t.string "status"
+    t.decimal "total_line_items_price", precision: 10, scale: 2
+    t.datetime "scheduled_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "line_items"
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
+    t.index ["order_id"], name: "index_orders_on_order_id"
+  end
 
   create_table "sub_collection_sizes", force: :cascade do |t|
     t.bigint "subscription_id"
