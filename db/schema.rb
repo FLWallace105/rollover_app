@@ -15,18 +15,6 @@ ActiveRecord::Schema.define(version: 2021_03_17_021838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "selection_sets", force: :cascade do |t|
-    t.integer "selection_set_type", default: 0
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.boolean "ignore_dates_use_nulls", default: false
-    t.boolean "allow_ellie_picks_in_selection_set", default: false
-    t.boolean "use_size_breaks", default: false
-    t.boolean "use_gloves_in_size_breaks", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "ellie_collects", force: :cascade do |t|
     t.bigint "collect_id", null: false
     t.bigint "collection_id", null: false
@@ -121,6 +109,18 @@ ActiveRecord::Schema.define(version: 2021_03_17_021838) do
     t.jsonb "line_items"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["order_id"], name: "index_orders_on_order_id"
+  end
+
+  create_table "selection_sets", force: :cascade do |t|
+    t.integer "selection_set_type", default: 0
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.boolean "ignore_dates_use_nulls", default: false
+    t.boolean "allow_ellie_picks_in_selection_set", default: false
+    t.boolean "use_size_breaks", default: false
+    t.boolean "use_gloves_in_size_breaks", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "sub_collection_sizes", force: :cascade do |t|
