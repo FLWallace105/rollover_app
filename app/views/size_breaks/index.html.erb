@@ -4,21 +4,35 @@
 <div class="container">
 <p>Some text here</p>
 
+<% @size_array = ['XS', 'S', 'M', 'L', 'XL'].freeze %>
 
-<%= form_for :selection_set, url: "size_breaks/create" do |form| %>
+<%= form_for :size_break, url: "size_breaks/create" do |form| %>
+
+  <%= form.check_box(:use_size_breaks) %>
+  <%= form.label(:use_size_breaks, "Use Size Breaks") %><br>
+
+
+  <%= form.select :product_type1, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+  <%= form.label :product_type1, "Product Type 1" %><br>
+  <% @size_array.each do |sa| %>
+  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+  <% end %>
   
-  <%= form.radio_button :size_break, 'monthly_sub' %>
-  <%= form.label :select_set_type_monthly_sub, "Monthly Subscription" %><br>
+  <%= form.select :product_type2, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+  <%= form.label :product_type2, "Product Type 2" %><br>
+  <% @size_array.each do |sa| %>
+  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+  <% end %>
+
+  <%= form.select :product_type3, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+  <%= form.label :product_type3, "Product Type 3" %><br>
+  <% @size_array.each do |sa| %>
+  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+  <% end %>
+
+ <%= form.select :two_item_exclude, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+  <%= form.label :two_item_exclude, "Two Item Exclude" %><br>
   
-  
-  
-  <%= form.radio_button :selection_set_type, 'prepaid_sub_no_orders' %>
-  <%= form.label :select_set_type_prepaid_sub_no_orders, "Prepaid Subscription No Orders" %><br>
-  
-  
-  
-  <%= form.radio_button :selection_set_type, 'prepaid_order' %>
-  <%= form.label :select_set_type_prepaid_order, "Prepaid Orders QUEUED Next Month"  %><br>
   
   
   <%= form.submit  %>
