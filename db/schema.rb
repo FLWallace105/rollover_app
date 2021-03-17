@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_182455) do
+ActiveRecord::Schema.define(version: 2021_03_17_191828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "current_products", force: :cascade do |t|
+    t.string "prod_id_key"
+    t.string "prod_id_value"
+    t.string "next_month_prod_id"
+    t.boolean "prepaid", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "inventory_sizes", force: :cascade do |t|
+    t.string "product_type"
+    t.string "product_size"
+    t.integer "inventory_avail"
+    t.integer "inventory_assigned"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "selection_sets", force: :cascade do |t|
     t.integer "selection_set_type", default: 0
@@ -23,6 +41,17 @@ ActiveRecord::Schema.define(version: 2021_03_16_182455) do
     t.boolean "allow_ellie_picks_in_selection_set", default: false
     t.boolean "use_size_breaks", default: false
     t.boolean "use_gloves_in_size_breaks", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "size_breaks", force: :cascade do |t|
+    t.boolean "use_size_breaks", default: false
+    t.boolean "use_gloves", default: false
+    t.boolean "use_leggings", default: true
+    t.boolean "use_sports_bra", default: true
+    t.boolean "use_tops", default: true
+    t.boolean "use_sports_jacket", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -72,6 +101,16 @@ ActiveRecord::Schema.define(version: 2021_03_16_182455) do
     t.boolean "sku_override", default: false
     t.string "product_collection"
     t.index ["subscription_id"], name: "index_subscriptions_on_subscription_id"
+  end
+
+  create_table "update_products", force: :cascade do |t|
+    t.string "sku"
+    t.string "product_title"
+    t.string "shopify_product_id"
+    t.string "shopify_variant_id"
+    t.string "product_collection"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

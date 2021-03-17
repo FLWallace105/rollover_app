@@ -40,7 +40,8 @@ class SelectionSet < ApplicationRecord
        #SubscriptionsUpdated.delete_all
        #Now reset index
        #ActiveRecord::Base.connection.reset_pk_sequence!('subscriptions_updated')
-       #ActiveRecord::Base.connection.execute(mar2021_monthly_straggler)
+       #Or something different above for orders obviously. 
+       #ActiveRecord::Base.connection.execute(set_type_selected)
 
 
 
