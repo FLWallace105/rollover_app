@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_182455) do
+ActiveRecord::Schema.define(version: 2021_03_17_021838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,79 @@ ActiveRecord::Schema.define(version: 2021_03_16_182455) do
     t.boolean "use_gloves_in_size_breaks", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "ellie_collects", force: :cascade do |t|
+    t.bigint "collect_id", null: false
+    t.bigint "collection_id", null: false
+    t.bigint "product_id", null: false
+    t.string "featured"
+    t.string "position"
+    t.string "sort_value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["collect_id"], name: "index_ellie_collects_on_collect_id"
+    t.index ["collection_id"], name: "index_ellie_collects_on_collection_id"
+    t.index ["product_id"], name: "index_ellie_collects_on_product_id"
+  end
+
+  create_table "ellie_custom_collections", force: :cascade do |t|
+    t.bigint "collection_id", null: false
+    t.string "handle"
+    t.string "title"
+    t.text "body_html"
+    t.datetime "published_at"
+    t.string "sort_order"
+    t.string "template_suffix"
+    t.string "published_scope"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["collection_id"], name: "index_ellie_custom_collections_on_collection_id"
+  end
+
+  create_table "ellie_metafields", force: :cascade do |t|
+    t.bigint "metafield_id"
+    t.bigint "product_id"
+    t.string "product_collection"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["metafield_id"], name: "index_ellie_metafields_on_metafield_id"
+    t.index ["product_id"], name: "index_ellie_metafields_on_product_id"
+  end
+
+  create_table "ellie_products", force: :cascade do |t|
+    t.bigint "product_id"
+    t.text "body_html"
+    t.datetime "created_at"
+    t.string "handle"
+    t.json "image"
+    t.json "images"
+    t.json "options"
+    t.string "product_type"
+    t.datetime "published_at"
+    t.string "published_scope"
+    t.string "tags"
+    t.string "template_suffix"
+    t.string "title"
+    t.string "metafields_global_title_tag"
+    t.string "metafields_global_description_tag"
+    t.datetime "updated_at"
+    t.text "variants"
+    t.string "vendor"
+    t.string "admin_graphql_api_id"
+    t.index ["product_id"], name: "index_ellie_products_on_product_id"
+  end
+
+  create_table "ellie_variants", force: :cascade do |t|
+    t.bigint "variant_id", null: false
+    t.string "sku"
+    t.string "title"
+    t.integer "inventory_quantity"
+    t.bigint "product_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_ellie_variants_on_product_id"
+    t.index ["variant_id"], name: "index_ellie_variants_on_variant_id"
   end
 
   create_table "orders", force: :cascade do |t|
