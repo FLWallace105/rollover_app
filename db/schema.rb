@@ -15,15 +15,6 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "current_products", force: :cascade do |t|
-    t.string "prod_id_key"
-    t.string "prod_id_value"
-    t.string "next_month_prod_id"
-    t.boolean "prepaid", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "ellie_collects", force: :cascade do |t|
     t.bigint "collect_id", null: false
     t.bigint "collection_id", null: false
@@ -97,15 +88,6 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
     t.index ["variant_id"], name: "index_ellie_variants_on_variant_id"
   end
 
-  create_table "inventory_sizes", force: :cascade do |t|
-    t.string "product_type"
-    t.string "product_size"
-    t.integer "inventory_avail"
-    t.integer "inventory_assigned"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "order_update_prepaid", force: :cascade do |t|
     t.bigint "order_id"
     t.bigint "subscription_id"
@@ -161,9 +143,8 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "order_id"
-    t.bigint "subscription_id"
-    t.bigint "customer_id"
+    t.integer "order_id"
+    t.integer "customer_id"
     t.string "email"
     t.string "first_name"
     t.string "last_name"
@@ -175,8 +156,6 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
     t.string "gloves"
     t.boolean "is_prepaid", default: false
     t.string "status"
-    t.integer "address_is_active"
-    t.string "order_type"
     t.decimal "total_line_items_price", precision: 10, scale: 2
     t.datetime "scheduled_at"
     t.datetime "created_at", precision: 6, null: false
@@ -201,17 +180,6 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
     t.string "sports_bra"
     t.string "sports_jacket"
     t.string "gloves"
-  end
-
-  create_table "size_breaks", force: :cascade do |t|
-    t.boolean "use_size_breaks", default: false
-    t.boolean "use_gloves", default: false
-    t.boolean "use_leggings", default: true
-    t.boolean "use_sports_bra", default: true
-    t.boolean "use_tops", default: true
-    t.boolean "use_sports_jacket", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "sub_collection_sizes", force: :cascade do |t|
@@ -297,16 +265,6 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
     t.jsonb "properties"
     t.boolean "is_updated_on_recharge", default: false
     t.datetime "date_updated_on_recharge"
-  end
-
-  create_table "update_products", force: :cascade do |t|
-    t.string "sku"
-    t.string "product_title"
-    t.string "shopify_product_id"
-    t.string "shopify_variant_id"
-    t.string "product_collection"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
 end
