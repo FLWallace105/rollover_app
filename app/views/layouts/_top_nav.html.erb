@@ -13,6 +13,9 @@
           Actions
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <%= link_to refresh_all_shopify_cache_path, :class => "dropdown-item", method: :post do %>
+            Refresh Shopify Cache
+          <% end %>
           
           <%= link_to recharge_subscriptions_path, :class => "dropdown-item", method: :post do %>
             Pull Recharge Subscriptions
@@ -23,6 +26,11 @@
           <div class="dropdown-divider"></div>
           
         </div>
+      </li>
+      <li class="nav-item">
+        <%= link_to new_selection_sets_path, :class => "dropdown-item" do %>
+          New Selection set
+        <% end %>
       </li>
       
     </ul>

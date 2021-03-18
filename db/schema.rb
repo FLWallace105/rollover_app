@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_17_021838) do
+ActiveRecord::Schema.define(version: 2021_03_18_000915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,11 @@ ActiveRecord::Schema.define(version: 2021_03_17_021838) do
     t.boolean "use_gloves_in_size_breaks", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "leggings"
+    t.string "tops"
+    t.string "sports_bra"
+    t.string "sports_jacket"
+    t.string "gloves"
   end
 
   create_table "sub_collection_sizes", force: :cascade do |t|

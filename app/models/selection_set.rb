@@ -5,19 +5,42 @@ class SelectionSet < ApplicationRecord
     
 
     def generate_sql_command
-       
-       next_month_product_collection_name = Date.today.next_month.strftime("%B %Y") + " Collections"
-       #use above to get custom_collection.
-       #then get the collects
-       #then get the products that belong to those above collects.
-       #Then get the product_collection metafield from the products above and stuff into array
-       #if self.allow_ellie_picks_in_selection_set == true then do not exclude ellie picks, remove from array above
+       next_month_product_collection_name = "August 18 Collections"#Date.today.next_month.strftime("%B %Y") + " Collections"
 
-       #product_array_to_exclude = array_from_above
-       #my_sql_frag = " and ( "
-       #array_from_above.each do |myvalue|
-       #    my_sql_frag = mysql_frag + "sub_collection_sizes.product_collection != \'#{myvalue}\' "
-       #end
+
+       #use above to get custom_collection.
+       custom_collection = EllieCustomCollection.where(title: next_month_product_collection_name).last #one custom collection only
+
+       #then get the collects
+       collects = custom_collection.ellie_collects
+
+       #then get the products that belong to those above collects.
+       products = collects.map{|collect| collect.ellie_product }
+
+       #Then get the product_collection metafield from the products above and stuff into array
+       product_collections = products.map{|product| product.ellie_metafield&.product_collection }.compact
+
+       if !self.allow_ellie_picks_in_selection_set
+        #then do not exclude ellie picks, remove from array above
+        product_collections = product_collections.reject{|product_collection_name| product_collection_name.include?('ellie picks') }
+      end
+
+      # product_array_to_exclude = product_collections
+
+      if ['monthly_subscription', 'prepaid_subscription'].include?(self.selection_set_type)
+
+        my_sql_frag = " and ( "
+        product_collections.each do |myvalue|
+          my_sql_frag << "sub_collection_sizes.product_collection not ilike \'#{myvalue}\' and "
+        end
+        my_sql_frag << + ")"
+
+        my_sql_frag << " and ( sub_collection_sizes.leggings = '#{self.leggings}' and sub_collection_sizes.tops = '#{self.tops}' and sub_collection_sizes.sports_bra = '#{self.sports_bra}' and sub_collection_sizes.sports_jacket = '#{self.sports_jacket}'"
+
+        my_sql_frag = self.use_gloves_in_size_breaks ? my_sql_frag + " and sub_collection_sizes.gloves = '#{self.gloves}' )" : " )"
+      else
+
+      end
 
        #Need to do same with orders obviously.
 
@@ -25,7 +48,7 @@ class SelectionSet < ApplicationRecord
 
        case self.selection_set_type.to_sym
        when :monthly_subscription
-        set_type_selected = "insert into subscriptions_updated (subscription_id, customer_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, raw_line_items) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.raw_line_item_properties from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE' and subscriptions.next_charge_scheduled_at >= \'#{self.start_date}\' and subscriptions.next_charge_scheduled_at <= \'#{self.end_date}\' and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and (  sub_collection_sizes.product_collection not ilike 'ellie%pick%' and sub_collection_sizes.product_collection not ilike 'on%run%' and sub_collection_sizes.product_collection not ilike 'coral%kiss%' and sub_collection_sizes.product_collection not ilike 'funfetti%' and sub_collection_sizes.product_collection not ilike 'island%sun%' and sub_collection_sizes.product_collection not ilike 'island%splash%' and sub_collection_sizes.product_collection not ilike 'force%nature%' and sub_collection_sizes.product_collection not ilike 'daily%mantra%' and sub_collection_sizes.product_collection not ilike 'grayscale%')"
+        set_type_selected = "insert into subscriptions_updated (subscription_id, customer_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, raw_line_items) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.raw_line_item_properties from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE' and subscriptions.next_charge_scheduled_at >= \'#{self.start_date}\' and subscriptions.next_charge_scheduled_at <= \'#{self.end_date}\' and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and #{my_sql_frag}"
        when :prepaid_subscription
         set_type_selected = "insert into subscriptions_updated (subscription_id, customer_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, raw_line_items) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.raw_line_item_properties from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE' and subscriptions.next_charge_scheduled_at > '2020-12-31' and subscriptions.next_charge_scheduled_at < '2021-02-01' and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'t\' and (  sub_collection_sizes.product_collection not ilike 'ellie%pick%' and sub_collection_sizes.product_collection not ilike 'on%run%' and sub_collection_sizes.product_collection not ilike 'coral%kiss%' and sub_collection_sizes.product_collection not ilike 'funfetti%' and sub_collection_sizes.product_collection not ilike 'island%sun%' and sub_collection_sizes.product_collection not ilike 'island%splash%' and sub_collection_sizes.product_collection not ilike 'force%nature%' and sub_collection_sizes.product_collection not ilike 'daily%mantra%' and sub_collection_sizes.product_collection not ilike 'grayscale%')"
 

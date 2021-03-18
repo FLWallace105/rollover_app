@@ -1,0 +1,64 @@
+<%= form_for(@selection_set) do |f| %>
+  <div class="form-label-group">
+    <%= f.radio_button :selection_set_type, "0", checked: @selection_set.selection_set_type?, class: 'multiple_classes' %> <%= f.label :selection_set_type, "Monthly Subscription", class: 'selection_set_type' %>
+  </div>
+  <div class="form-label-group">
+    <%= f.radio_button :selection_set_type, "1", checked: @selection_set.selection_set_type?, class: 'multiple_classes' %> <%= f.label :selection_set_type, "Prepaid Subscription", class: 'selection_set_type' %>
+  </div>
+  <div class="form-label-group">
+    <%= f.radio_button :selection_set_type, "2", checked: @selection_set.selection_set_type?, class: 'multiple_classes' %> <%= f.label :selection_set_type, "Prepaid Order", class: 'selection_set_type' %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label :start_date %>
+    <%= f.text_field :start_date, "data-provide" => 'datepicker' %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label :end_date %>
+    <%= f.text_field :end_date, "data-provide" => 'datepicker' %>
+  </div>
+
+  <div class="form-label-group">
+      <%= f.check_box :ignore_dates_use_nulls %>
+      <%= f.label "Ignore Dates just give me NULLS" %>
+  </div>
+
+  <div class="form-label-group">
+      <%= f.check_box :use_size_breaks %>
+      <%= f.label "Choose Selected Sizes" %>
+  </div>
+
+  <div class="form-label-group">
+      <%= f.check_box :use_gloves_in_size_breaks %>
+      <%= f.label "Use Gloves" %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label "Leggings" %>
+    <%= f.select :leggings, [["XS", "XS"], ["S", "S"], ["M", "M"], ["L", "L"], ["XL", "XL"]] %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label "Tops" %>
+    <%= f.select :tops, [["XS", "XS"], ["S", "S"], ["M", "M"], ["L", "L"], ["XL", "XL"]] %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label "Sports bra" %>
+    <%= f.select :sports_bra, [["XS", "XS"], ["S", "S"], ["M", "M"], ["L", "L"], ["XL", "XL"]] %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label "Sports jacket" %>
+    <%= f.select :sports_jacket, [["XS", "XS"], ["S", "S"], ["M", "M"], ["L", "L"], ["XL", "XL"]] %>
+  </div>
+
+  <div class="form-label-group">
+    <%= f.label "Gloves" %>
+    <%= f.select :gloves, [["XS", "XS"], ["S", "S"], ["M", "M"], ["L", "L"], ["XL", "XL"]] %>
+  </div>
+
+  <%= link_to 'Back', root_path, class: 'btn btn-primary' %>
+  <%= f.submit class: 'btn btn-success' %>
+<% end %>

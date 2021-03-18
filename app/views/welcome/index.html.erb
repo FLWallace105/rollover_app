@@ -7,7 +7,7 @@
       <h2>Refresh Shopify Cache</h2>
       <p>This action will pull down all products and variants and set up in the local database the products that are eligible to be in the pool for allocating customers with an 'Ellie Picks' subscription. You should run this when new products have been added to Ellie in Shopify and you want to include them in the list for possible allocation for the 'Ellie Picks' subscription. Otherwise there is no need to run this job. </p>
       <p>
-        
+        <%= link_to 'Run »', refresh_all_shopify_cache_path, :class => "btn btn-secondary", method: :post %>
       </p>
     </div>
     <div class="col-md-3">
