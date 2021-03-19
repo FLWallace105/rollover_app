@@ -13,14 +13,14 @@
           Actions
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <%= link_to refresh_all_shopify_cache_path, :class => "dropdown-item", method: :post do %>
+          <%= link_to refresh_all_shopify_cache_path, :class => "dropdown-item" do %>
             Refresh Shopify Cache
           <% end %>
           
-          <%= link_to recharge_subscriptions_path, :class => "dropdown-item", method: :post do %>
+          <%= link_to recharge_subscriptions_path, :class => "dropdown-item" do %>
             Pull Recharge Subscriptions
           <% end %>
-          <%= link_to recharge_orders_path, :class => "dropdown-item", method: :post do %>
+          <%= link_to recharge_orders_path, :class => "dropdown-item" do %>
             Pull Recharge Orders
           <% end %>
           <div class="dropdown-divider"></div>

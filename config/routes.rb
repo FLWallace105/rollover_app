@@ -7,12 +7,12 @@ Rails.application.routes.draw do
 
   resource :shopify_cache, only: [] do
     collection do
-      post :refresh_all
+      get :refresh_all
     end
   end
 
-  resources :recharge_subscriptions, only: :create
-  resources :recharge_orders, only: :create
+  resources :recharge_subscriptions, only: :index
+  resources :recharge_orders, only: :index
 
   resources :selection_sets, only: [:index, :new, :create, :show]
 
