@@ -16,20 +16,19 @@ import jquery from 'jquery';
 window.$ = window.jquery = jquery;
 
 import "bootstrap"
-import "../stylesheets/application"
+// import "../stylesheets/application"
 // import "bootstrap/dist/js/bootstrap"
 import "jquery/dist/jquery"
 import "popper.js/dist/esm/popper"
 import flatpickr from "flatpickr";
+require("flatpickr/dist/flatpickr.css")
 
-Rails.start()
+
+// Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
-//= require flatpickr
-
-// document.addEventListener('DOMContentLoaded', function() {
-//   flatpickr('.your-selector');
-// })
-
-// $('#flatpickr-input').flatpickr();
+document.addEventListener('turbolinks:load', function() {
+  flatpickr('#selection_set_start_date');
+  flatpickr('#selection_set_end_date');
+})
