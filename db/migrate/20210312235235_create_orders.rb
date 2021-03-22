@@ -15,6 +15,8 @@ class CreateOrders < ActiveRecord::Migration[6.1]
       t.string :gloves
       t.boolean :is_prepaid, default: false
       t.string :status
+      t.integer :address_is_active
+      t.string :order_type
       t.decimal :total_line_items_price, precision: 10, scale: 2
       t.datetime :scheduled_at
       t.timestamps #the date/time stamps for the orders refer to the values passed in from
@@ -25,3 +27,4 @@ class CreateOrders < ActiveRecord::Migration[6.1]
     add_index :orders, :customer_id
   end
 end
+

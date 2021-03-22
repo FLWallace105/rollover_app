@@ -116,10 +116,9 @@ module RechargeOrderCache
         last_name: order.dig('last_name'),
         line_items: order.dig('line_items'),
         status: order.dig('status'),
+        order_type: order.dig('order_type'),
         total_line_items_price: order.dig('total_line_items_price').to_f
       }
-      
-
     end
 
   end
