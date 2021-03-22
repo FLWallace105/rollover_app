@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_18_000915) do
+ActiveRecord::Schema.define(version: 2021_03_22_224414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -171,6 +171,25 @@ ActiveRecord::Schema.define(version: 2021_03_18_000915) do
     t.index ["subscription_id"], name: "index_sub_collection_sizes_on_subscription_id"
   end
 
+  create_table "subscription_updated_recharge", force: :cascade do |t|
+    t.bigint "subscription_id"
+    t.bigint "customer_id"
+    t.string "email"
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.datetime "next_charge_scheduled_at"
+    t.string "new_product_title"
+    t.string "status"
+    t.string "new_sku"
+    t.bigint "new_shopify_product_id"
+    t.bigint "new_shopify_variant_id"
+    t.string "new_product_collection"
+    t.boolean "is_prepaid", default: false
+    t.jsonb "new_properties"
+    t.boolean "is_updated_on_recharge", default: false
+    t.datetime "date_updated_on_recharge"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.bigint "subscription_id"
     t.bigint "address_id"
@@ -203,6 +222,25 @@ ActiveRecord::Schema.define(version: 2021_03_18_000915) do
     t.boolean "sku_override", default: false
     t.string "product_collection"
     t.index ["subscription_id"], name: "index_subscriptions_on_subscription_id"
+  end
+
+  create_table "subscriptions_updated", force: :cascade do |t|
+    t.bigint "subscription_id"
+    t.bigint "customer_id"
+    t.string "email"
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.datetime "next_charge_scheduled_at"
+    t.string "product_title"
+    t.string "status"
+    t.string "sku"
+    t.bigint "shopify_product_id"
+    t.bigint "shopify_variant_id"
+    t.string "product_collection"
+    t.boolean "is_prepaid", default: false
+    t.jsonb "properties"
+    t.boolean "is_updated_on_recharge", default: false
+    t.datetime "date_updated_on_recharge"
   end
 
   create_table "update_products", force: :cascade do |t|
