@@ -27,8 +27,9 @@ class HttpartyService
     def self.build_headers(new_headers)
       default_headers = {
         'Content-Type' => 'application/json',
-        'X-Recharge-Access-Token' => ENV['recharge_access_token']
+        'X-Recharge-Access-Token' => Rails.application.credentials.recharge[:recharge_access_token]
       }
+      #puts "default_headers = #{default_headers.inspect}"
       default_headers.merge!(new_headers) if new_headers
   
       default_headers

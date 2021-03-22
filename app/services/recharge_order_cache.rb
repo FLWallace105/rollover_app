@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RechargeOrderCache
-  PROPERTIES = %w[leggings tops sports_bra sports_jacket gloves product_collection outfit_id].freeze
+  PROPERTIES = %w[leggings tops sports_bra sports_jacket gloves product_collection].freeze
   BASE_URI = 'https://api.rechargeapps.com'
 
   class << self
@@ -10,6 +10,7 @@ module RechargeOrderCache
       ActiveRecord::Base.connection.reset_pk_sequence!('orders')
 
       orders = fetch_orders
+      #puts "orders = #{orders.inspect}"
       Order.import(orders, batch_size: 50)
       puts "All done with fetching and creating orders"
     end
@@ -55,7 +56,7 @@ module RechargeOrderCache
 
           orders << build_default_order_attrs(order).merge(selected_properties)
         end
-
+        #puts "orders = #{orders.inspect}"
         puts "Done loading page #{page}"
         BackgroundHelper.determine_limits(recharge_limit, 0.65)
       end
@@ -78,6 +79,7 @@ module RechargeOrderCache
     end
 
     def build_properties(properties)
+      #puts "Here properties are #{properties}"
       selected_properties = {}
       upcased_properties = %w[leggings tops sports_bra sports_jacket gloves]
 
@@ -90,6 +92,7 @@ module RechargeOrderCache
           selected_properties[property_name.to_sym] = value
         end
       end
+      #puts "selected_properties = #{selected_properties}"
       selected_properties
     end
 
@@ -103,7 +106,6 @@ module RechargeOrderCache
         sports_bra: nil,
         sports_jacket: nil,
         gloves: nil,
-        outfit_id: nil,
         subscription_id: order.dig('line_items', 0, 'subscription_id'),
         is_prepaid: order.dig('is_prepaid') == 1,
         scheduled_at: order.dig('scheduled_at'),
@@ -116,6 +118,9 @@ module RechargeOrderCache
         status: order.dig('status'),
         total_line_items_price: order.dig('total_line_items_price').to_f
       }
+      
+
     end
+
   end
 end
