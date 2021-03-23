@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_22_233114) do
+ActiveRecord::Schema.define(version: 2021_03_23_190217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "current_products", force: :cascade do |t|
     t.string "prod_id_key"
-    t.string "prod_id_value"
-    t.string "next_month_prod_id"
+    t.bigint "prod_id_value"
+    t.bigint "next_month_prod_id"
     t.boolean "prepaid", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -230,6 +230,7 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
   create_table "subscription_updated_recharge", force: :cascade do |t|
     t.bigint "subscription_id"
     t.bigint "customer_id"
+    t.bigint "address_id"
     t.string "email"
     t.datetime "updated_at"
     t.datetime "created_at"
@@ -283,6 +284,7 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
   create_table "subscriptions_updated", force: :cascade do |t|
     t.bigint "subscription_id"
     t.bigint "customer_id"
+    t.bigint "address_id"
     t.string "email"
     t.datetime "updated_at"
     t.datetime "created_at"
@@ -302,8 +304,8 @@ ActiveRecord::Schema.define(version: 2021_03_22_233114) do
   create_table "update_products", force: :cascade do |t|
     t.string "sku"
     t.string "product_title"
-    t.string "shopify_product_id"
-    t.string "shopify_variant_id"
+    t.bigint "shopify_product_id"
+    t.bigint "shopify_variant_id"
     t.string "product_collection"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

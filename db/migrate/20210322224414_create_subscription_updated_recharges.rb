@@ -3,6 +3,7 @@ class CreateSubscriptionUpdatedRecharges < ActiveRecord::Migration[6.1]
     create_table :subscription_updated_recharge do |t|
       t.bigint :subscription_id
       t.bigint :customer_id
+      t.bigint :address_id
       t.string :email
       t.datetime :updated_at
       t.datetime :created_at
