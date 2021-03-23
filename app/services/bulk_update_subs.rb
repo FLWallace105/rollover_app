@@ -137,11 +137,45 @@ module BulkUpdateSubs
         my_tasks = { "tasks": temp_tasks } 
         puts "JSON for RECHARGE: \n\n\n"
         puts my_tasks.inspect
+        puts "\n\n\n\n"
+        puts "*****************"
+        puts "*****************"
+        puts "*****************"
+
+        body = my_tasks
+        url = "#{BASE_URI}/async_batches/16085/tasks"
+        response = HttpartyService.post(url, {}, body)
+        puts response.inspect
+        
+        #"id"=>16085
+
+        
 
 
 
+        
+
+    end
+
+    def self.send_task_process
         #POST /async_batches/:batch_id/process
         #request.body = "{}"
+        body = {}
+        url = "#{BASE_URI}/async_batches/16085/process"
+        response = HttpartyService.post(url, {}, body)
+        puts response.inspect
+
+
+    end
+
+    def self.get_task_info
+        #GET /async_batches/<batch_id>
+        url = "#{BASE_URI}/async_batches/16085"
+        query = {}
+        response = HttpartyService.get(url, {}, query)
+        puts response.inspect
+
+
 
     end
 
