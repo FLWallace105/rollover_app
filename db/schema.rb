@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_23_190217) do
+ActiveRecord::Schema.define(version: 2021_03_24_195058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "batch_tasks", force: :cascade do |t|
+    t.bigint "batch_id"
+    t.bigint "num_tasks_this_batch"
+    t.boolean "sent_to_processing", default: false
+    t.boolean "batch_filled_with_tasks", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "current_products", force: :cascade do |t|
     t.string "prod_id_key"

@@ -1,0 +1,2 @@
+class BatchTask < ApplicationRecord
+end

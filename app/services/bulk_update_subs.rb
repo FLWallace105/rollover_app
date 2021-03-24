@@ -39,15 +39,15 @@ module BulkUpdateSubs
 
             case my_title
             when /\s2\sitem/i
-                next_month_prod_id = 4171973099659
+                next_month_prod_id = 4171973263499
             when /\s3\sitem/i
-                next_month_prod_id = 4171972345995
+                next_month_prod_id = 4643650699403
             when /\s5\sitem/i
-                next_month_prod_id = 4171972640907
+                next_month_prod_id = 4171973361803
             when "3 MONTHS"
-                next_month_prod_id = 4171972640907
+                next_month_prod_id = 4171973361803
             else
-                next_month_prod_id = 4171972640907
+                next_month_prod_id = 4171973361803
             end
             CurrentProduct.create(prod_id_key: my_title, prod_id_value: my_prod_id, next_month_prod_id: next_month_prod_id, prepaid: false, created_at: now, updated_at: now )
 
@@ -57,8 +57,16 @@ module BulkUpdateSubs
         puts myp.inspect
       end
 
+    BatchTask.delete_all
+    ActiveRecord::Base.connection.reset_pk_sequence!('batch_tasks')  
     num_batches_needed = determine_batches_needed
     puts "We need #{num_batches_needed} batches"
+    1.upto(num_batches_needed) do |nb|
+        batch_id = create_batch_task
+        temp_batch = BatchTask.new(batch_id: batch_id)
+        temp_batch.save!
+
+    end
 
     end
 
@@ -80,21 +88,40 @@ module BulkUpdateSubs
         response = HttpartyService.post(url, {}, body)
         puts response.inspect
         batch_id = response.parsed_response['async_batch']['id']
-        puts "batch_id = #{batch_id}"
-        #probably need to save to database here, leaving for now
-        puts "Done!"
+        puts "batch_id = #{batch_id}"  
+        #puts "Done!"
+        return batch_id
 
     end
 
+
     def self.bulk_update_subs
+        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", false, false)
+        my_batch_tasks.map do |mbt|
+            temp_batch_id = mbt.batch_id
+            mbt.num_tasks_this_batch = 0
+            mbt.save!
+            my_continue = true
+            while my_continue == true
+                my_continue = bulk_update_task(temp_batch_id)
+                
+            end
+            
+            
+
+        end
+
+    end
+
+    def self.bulk_update_task(batch_id)
         #WARNING WARNING WARNING WARNING
         #Code below is ONLY for non-prepaid subscriptions. Will need to check on prepaid value in 
         #SubscriptionsUpdated.is_prepaid value
 
 
         #POST /async_batches
-        body = {"batch_type": "bulk_subscriptions_update"}
-        url = "#{BASE_URI}/async_batches"
+        #body = {"batch_type": "bulk_subscriptions_update"}
+        #url = "#{BASE_URI}/async_batches"
         #response = HttpartyService.post(url, {}, body)
         #puts response.inspect
         #batch_id = response.parsed_response['async_batch']['id']
@@ -106,6 +133,8 @@ module BulkUpdateSubs
         #my_tasks = { "tasks": [] }
         temp_tasks = Array.new
         mycount = 1
+        my_batch_info = BatchTask.find_by_batch_id(batch_id)
+        
 
         proceed_with_batch_info = false
         temp_subs = SubscriptionsUpdated.where("pushed_to_batch_request = ?", false)
@@ -173,81 +202,106 @@ module BulkUpdateSubs
         puts "*****************"
         puts "*****************"
 
-        if proceed_with_batch_info == true
+        my_batch_info.num_tasks_this_batch = my_batch_info.num_tasks_this_batch + mycount - 1
+        my_batch_info.save!
+
+        if proceed_with_batch_info == true && my_batch_info.num_tasks_this_batch <= 10000
             body = my_tasks
-            url = "#{BASE_URI}/async_batches/16086/tasks"
+            url = "#{BASE_URI}/async_batches/#{batch_id}/tasks"
             response = HttpartyService.post(url, {}, body)
             puts response.inspect
+            if my_batch_info.num_tasks_this_batch == 10000
+                my_batch_info.batch_filled_with_tasks = true
+                my_batch_info.save!
+                return false
+            else
+                return true
+            end
+            
         else
+            my_batch_info.batch_filled_with_tasks = true
+            my_batch_info.save!
             puts "No more batch tasks to add for this batch"
+            return false
         end
-
-        puts "Done with this module"
-        
-        #"id"=>16085
-
-        
-
-
-
-        
 
     end
 
     def self.send_task_process
         #POST /async_batches/:batch_id/process
         #request.body = "{}"
-        body = {}
-        url = "#{BASE_URI}/async_batches/16086/process"
-        response = HttpartyService.post(url, {}, body)
-        puts response.inspect
+        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, false)
+        my_batch_tasks.map do |mybt|
+            body = {}
+            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}/process"
+            response = HttpartyService.post(url, {}, body)
+            puts response.inspect
+            mybt.sent_to_processing = true
+            mybt.save
+        end
 
 
     end
 
     def self.get_task_info
         #GET /async_batches/<batch_id>
-        url = "#{BASE_URI}/async_batches/16086"
-        query = {}
-        response = HttpartyService.get(url, {}, query)
-        puts response.inspect
+        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, true)
+        my_batch_tasks.each do |mybt|
+            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}"
+            query = {}
+            response = HttpartyService.get(url, {}, query)
+            puts response.inspect
+        end
+    end
 
-        num_tasks_total = response.parsed_response['async_batch']['total_task_count'].to_i
-        puts "num_tasks_total = #{num_tasks_total}"
-        page_size = 250
-        num_pages = (num_tasks_total / page_size.to_f).ceil
-        new_query = {limit: page_size }
+    def self.detailed_task_info
+        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, true)
+        my_batch_tasks.each do |mybt|
+            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}"
+            query = {}
+            response = HttpartyService.get(url, {}, query)
+            puts response.inspect
 
-        #GET https://api.rechargeapps.com/async_batches/:batch_id/tasks
-        my_counter = 1
+            num_tasks_total = response.parsed_response['async_batch']['total_task_count'].to_i
+            puts "num_tasks_total = #{num_tasks_total}"
+            page_size = 250
+            num_pages = (num_tasks_total / page_size.to_f).ceil
+            new_query = {limit: page_size }
 
-        1.upto(num_pages) do |page|
+            my_counter = 1
 
-            new_url = "#{BASE_URI}/async_batches/16086/tasks"
-            new_query.merge!(page: page)
-            task_response = HttpartyService.get(new_url, {}, new_query)
-            puts task_response.inspect
-            my_info = task_response.parsed_response['async_batch_tasks']
+            1.upto(num_pages) do |page|
+
+                new_url = "#{BASE_URI}/async_batches/#{mybt.batch_id}/tasks"
+                new_query.merge!(page: page)
+                task_response = HttpartyService.get(new_url, {}, new_query)
+                puts task_response.inspect
+                my_info = task_response.parsed_response['async_batch_tasks']
 
             
-            my_info.each do |myi|
-                puts "---------"
-                puts myi['result']['output']['subscriptions']
-                status_of_request = myi['result']['status_code'].to_i
-                if status_of_request != 200
-                    puts "PROBLEM -->"
-                    puts myi['result']
-                    #exit
-                else
-                    #log to database.
-                end
-                puts "Item #{my_counter}"
-                puts "---------"
-                my_counter += 1
+                my_info.each do |myi|
+                    
+                    puts myi.inspect
+                    status_of_request = myi['result']['status_code'].to_i
+                    if status_of_request != 200
+                        puts "PROBLEM -->"
+                        puts myi['result']
+                        #exit
+                    else
+                        puts "---------"
+                        puts myi['result']['output']['subscriptions']
+                        #log to database.
+                    end
+                    puts "Item #{my_counter}"
+                    puts "---------"
+                    my_counter += 1
 
                 end
-            puts "Done with page #{page}"
+                puts "Done with page #{page}"
+            end
+            puts "Moving on to next batch ..."
         end
+
         puts "All done with task pages"
 
     end
