@@ -16,6 +16,7 @@ class CreateSubscriptionsUpdateds < ActiveRecord::Migration[6.1]
       t.string :product_collection
       t.boolean :is_prepaid, default: false
       t.jsonb :properties
+      t.boolean :pushed_to_batch_request, default: false
       t.boolean :is_updated_on_recharge, default: false
       t.datetime :date_updated_on_recharge
     end

@@ -60,6 +60,19 @@ module BulkUpdateSubs
 
     end
 
+    def self.create_batch_task
+        puts "Starting batch task creation"
+        body = {"batch_type": "bulk_subscriptions_update"}
+        url = "#{BASE_URI}/async_batches"
+        response = HttpartyService.post(url, {}, body)
+        puts response.inspect
+        batch_id = response.parsed_response['async_batch']['id']
+        puts "batch_id = #{batch_id}"
+        #probably need to save to database here, leaving for now
+        puts "Done!"
+
+    end
+
     def self.bulk_update_subs
         #WARNING WARNING WARNING WARNING
         #Code below is ONLY for non-prepaid subscriptions. Will need to check on prepaid value in 
@@ -81,8 +94,11 @@ module BulkUpdateSubs
         temp_tasks = Array.new
         mycount = 1
 
-        temp_subs = SubscriptionsUpdated.where("is_updated_on_recharge = ?", false)
+        proceed_with_batch_info = false
+        temp_subs = SubscriptionsUpdated.where("pushed_to_batch_request = ?", false)
         temp_subs.each do |temps|
+            #Have at least one to add to batch so ...
+            proceed_with_batch_info = true
             puts temps.inspect
             my_next_product_id = CurrentProduct.find_by_prod_id_value(temps.shopify_product_id)
             puts "-----------"
@@ -130,7 +146,9 @@ module BulkUpdateSubs
             }
             temp_tasks.push(temp_json)
             mycount += 1
-            break if mycount == 1000
+            temps.pushed_to_batch_request = true
+            temps.save!
+            break if mycount > 1000
 
         end
 
@@ -142,10 +160,16 @@ module BulkUpdateSubs
         puts "*****************"
         puts "*****************"
 
-        body = my_tasks
-        url = "#{BASE_URI}/async_batches/16085/tasks"
-        response = HttpartyService.post(url, {}, body)
-        puts response.inspect
+        if proceed_with_batch_info == true
+            body = my_tasks
+            url = "#{BASE_URI}/async_batches/16086/tasks"
+            response = HttpartyService.post(url, {}, body)
+            puts response.inspect
+        else
+            puts "No more batch tasks to add for this batch"
+        end
+
+        puts "Done with this module"
         
         #"id"=>16085
 
@@ -161,7 +185,7 @@ module BulkUpdateSubs
         #POST /async_batches/:batch_id/process
         #request.body = "{}"
         body = {}
-        url = "#{BASE_URI}/async_batches/16085/process"
+        url = "#{BASE_URI}/async_batches/16086/process"
         response = HttpartyService.post(url, {}, body)
         puts response.inspect
 
@@ -170,7 +194,7 @@ module BulkUpdateSubs
 
     def self.get_task_info
         #GET /async_batches/<batch_id>
-        url = "#{BASE_URI}/async_batches/16085"
+        url = "#{BASE_URI}/async_batches/16086"
         query = {}
         response = HttpartyService.get(url, {}, query)
         puts response.inspect
