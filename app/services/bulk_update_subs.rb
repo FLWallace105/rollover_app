@@ -4,7 +4,7 @@ module BulkUpdateSubs
 
     def self.setup_update_subs
         puts "starting bulk updating"
-        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE' and subscriptions.next_charge_scheduled_at > '2021-03-31' and subscriptions.next_charge_scheduled_at < '2021-05-01' and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' "
+        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' "
 
         SubscriptionsUpdated.delete_all
         #Now reset index
@@ -19,9 +19,9 @@ module BulkUpdateSubs
 
         #Boss Babe exists in Recharge, use that for set up
         
-        UpdateProduct.create(product_title: 'Boss Babe - 2 Items', sku: '764204806164', shopify_product_id: 4171973099659, shopify_variant_id: 30330213269643, product_collection: 'Boss Babe - 2 Items', created_at: now, updated_at: now)
-        UpdateProduct.create(product_title: 'Boss Babe - 3 Items', sku: '764204806171', shopify_product_id: 4171972345995, shopify_variant_id: 30330211532939, product_collection: 'Boss Babe - 3 Items', created_at: now, updated_at: now )
-        UpdateProduct.create(product_title: 'Boss Babe - 5 Items', sku: '764204816828', shopify_product_id: 4171972640907, shopify_variant_id: 30330211926155, product_collection:'Boss Babe - 5 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Canyon Sunset - 2 Items', sku: '764204816835', shopify_product_id: 4171973263499, shopify_variant_id: 30330213761163, product_collection: 'Canyon Sunset - 2 Items', created_at: now, updated_at: now)
+        UpdateProduct.create(product_title: 'Canyon Sunset - 3 Items', sku: '764204816842', shopify_product_id: 4643650699403, shopify_variant_id: 32786274615435, product_collection: 'Canyon Sunset - 3 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Canyon Sunset - 5 Items', sku: '764204843701', shopify_product_id: 4171973361803, shopify_variant_id: 30330213892235, product_collection:'Canyon Sunset - 5 Items', created_at: now, updated_at: now )
 
 
         puts "Done with set up of update_products table"
@@ -56,6 +56,19 @@ module BulkUpdateSubs
       my_current_products.each do |myp|
         puts myp.inspect
       end
+
+    num_batches_needed = determine_batches_needed
+    puts "We need #{num_batches_needed} batches"
+
+    end
+
+    def self.determine_batches_needed
+       
+        num_subs = SubscriptionsUpdated.count
+        batch_size = 10000 #total number of tasks i.e. subs one batch can have
+        num_batches = (num_subs / batch_size.to_f).ceil
+        #puts "num_batches needed = #{num_batches}"
+        return num_batches
 
 
     end
@@ -199,7 +212,43 @@ module BulkUpdateSubs
         response = HttpartyService.get(url, {}, query)
         puts response.inspect
 
+        num_tasks_total = response.parsed_response['async_batch']['total_task_count'].to_i
+        puts "num_tasks_total = #{num_tasks_total}"
+        page_size = 250
+        num_pages = (num_tasks_total / page_size.to_f).ceil
+        new_query = {limit: page_size }
 
+        #GET https://api.rechargeapps.com/async_batches/:batch_id/tasks
+        my_counter = 1
+
+        1.upto(num_pages) do |page|
+
+            new_url = "#{BASE_URI}/async_batches/16086/tasks"
+            new_query.merge!(page: page)
+            task_response = HttpartyService.get(new_url, {}, new_query)
+            puts task_response.inspect
+            my_info = task_response.parsed_response['async_batch_tasks']
+
+            
+            my_info.each do |myi|
+                puts "---------"
+                puts myi['result']['output']['subscriptions']
+                status_of_request = myi['result']['status_code'].to_i
+                if status_of_request != 200
+                    puts "PROBLEM -->"
+                    puts myi['result']
+                    #exit
+                else
+                    #log to database.
+                end
+                puts "Item #{my_counter}"
+                puts "---------"
+                my_counter += 1
+
+                end
+            puts "Done with page #{page}"
+        end
+        puts "All done with task pages"
 
     end
 
