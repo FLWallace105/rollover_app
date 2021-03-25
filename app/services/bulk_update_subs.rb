@@ -227,37 +227,36 @@ module BulkUpdateSubs
 
     end
 
-    def self.send_task_process
+    def self.send_task_process(batch_id)
         #POST /async_batches/:batch_id/process
         #request.body = "{}"
-        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, false)
-        my_batch_tasks.map do |mybt|
-            body = {}
-            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}/process"
-            response = HttpartyService.post(url, {}, body)
-            puts response.inspect
-            mybt.sent_to_processing = true
-            mybt.save
-        end
+        my_batch_task = BatchTask.find_by_batch_id(batch_id)
+        
+        body = {}
+        url = "#{BASE_URI}/async_batches/#{my_batch_task.batch_id}/process"
+        response = HttpartyService.post(url, {}, body)
+        puts response.inspect
+        my_batch_task.sent_to_processing = true
+        my_batch_task.save
+        
 
 
     end
 
-    def self.get_task_info
-        #GET /async_batches/<batch_id>
-        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, true)
-        my_batch_tasks.each do |mybt|
-            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}"
-            query = {}
-            response = HttpartyService.get(url, {}, query)
-            puts response.inspect
-        end
+    def self.get_task_info(batch_id)
+        
+        
+        url = "#{BASE_URI}/async_batches/#{batch_id}"
+        query = {}
+        response = HttpartyService.get(url, {}, query)
+        puts response.inspect
+        
     end
 
-    def self.detailed_task_info
-        my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, true)
-        my_batch_tasks.each do |mybt|
-            url = "#{BASE_URI}/async_batches/#{mybt.batch_id}"
+    def self.detailed_task_info(batch_id)
+        #my_batch_tasks = BatchTask.where("batch_filled_with_tasks = ? and sent_to_processing = ?", true, true)
+        #my_batch_tasks.each do |mybt|
+            url = "#{BASE_URI}/async_batches/#{batch_id}"
             query = {}
             response = HttpartyService.get(url, {}, query)
             puts response.inspect
@@ -272,7 +271,7 @@ module BulkUpdateSubs
 
             1.upto(num_pages) do |page|
 
-                new_url = "#{BASE_URI}/async_batches/#{mybt.batch_id}/tasks"
+                new_url = "#{BASE_URI}/async_batches/#{batch_id}/tasks"
                 new_query.merge!(page: page)
                 task_response = HttpartyService.get(new_url, {}, new_query)
                 puts task_response.inspect
@@ -300,7 +299,7 @@ module BulkUpdateSubs
                 puts "Done with page #{page}"
             end
             puts "Moving on to next batch ..."
-        end
+        #end
 
         puts "All done with task pages"
 
