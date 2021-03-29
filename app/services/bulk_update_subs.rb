@@ -4,7 +4,7 @@ module BulkUpdateSubs
 
     def self.setup_update_subs
         puts "starting bulk updating"
-        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' "
+        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and next_charge_scheduled_at > '2021-03-31' and next_charge_scheduled_at < '2021-04-03' "
 
         SubscriptionsUpdated.delete_all
         #Now reset index
@@ -19,9 +19,9 @@ module BulkUpdateSubs
 
         #Boss Babe exists in Recharge, use that for set up
         
-        UpdateProduct.create(product_title: 'Canyon Sunset - 2 Items', sku: '764204816835', shopify_product_id: 4171973263499, shopify_variant_id: 30330213761163, product_collection: 'Canyon Sunset - 2 Items', created_at: now, updated_at: now)
-        UpdateProduct.create(product_title: 'Canyon Sunset - 3 Items', sku: '764204816842', shopify_product_id: 4643650699403, shopify_variant_id: 32786274615435, product_collection: 'Canyon Sunset - 3 Items', created_at: now, updated_at: now )
-        UpdateProduct.create(product_title: 'Canyon Sunset - 5 Items', sku: '764204843701', shopify_product_id: 4171973361803, shopify_variant_id: 30330213892235, product_collection:'Canyon Sunset - 5 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'After The Storm - 2 Items', sku: '745934606828', shopify_product_id: 6551170023482, shopify_variant_id: 39284132839482, product_collection: 'After The Storm - 2 Items', created_at: now, updated_at: now)
+        UpdateProduct.create(product_title: 'After The Storm - 3 Items', sku: '745934606835', shopify_product_id: 6551170515002, shopify_variant_id: 39284134445114, product_collection: 'After The Storm - 3 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'After The Storm - 5 Items', sku: '745934606842', shopify_product_id: 6551173136442, shopify_variant_id: 39284146241594, product_collection:'After The Storm - 5 Items', created_at: now, updated_at: now )
 
 
         puts "Done with set up of update_products table"
@@ -39,15 +39,15 @@ module BulkUpdateSubs
 
             case my_title
             when /\s2\sitem/i
-                next_month_prod_id = 4171973263499
+                next_month_prod_id = 6551170023482
             when /\s3\sitem/i
-                next_month_prod_id = 4643650699403
+                next_month_prod_id = 6551170515002
             when /\s5\sitem/i
-                next_month_prod_id = 4171973361803
+                next_month_prod_id = 6551173136442
             when "3 MONTHS"
-                next_month_prod_id = 4171973361803
+                next_month_prod_id = 6551173136442
             else
-                next_month_prod_id = 4171973361803
+                next_month_prod_id = 6551173136442
             end
             CurrentProduct.create(prod_id_key: my_title, prod_id_value: my_prod_id, next_month_prod_id: next_month_prod_id, prepaid: false, created_at: now, updated_at: now )
 

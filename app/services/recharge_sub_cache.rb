@@ -97,8 +97,24 @@ module RechargeSubCache
 
     end
 
+    def self.test_props
+      test_stuff = [{"name"=>"leggings", "value"=>"L"}, {"name"=>"sports-bra", "value"=>"M"}, {"name"=>"tops", "value"=>"M"}, {"name"=>"sports-jacket", "value"=>"M"}, {"name"=>"gloves", "value"=>"L"}]
+      my_value = test_stuff.select {|x| x['name'] == "product_collection"}
+      puts my_value.inspect
+
+    end
+
     def self.process_sub(sub)
-        my_product_collection = sub['properties'].select { |x| x['name'] == "product_collection"}.first['value']
+        #my_product_collection = sub['properties']&.select { |x| x['name'] == "product_collection"}.first['value'] 
+        puts "sub['properties'] = #{sub['properties'].inspect}"
+        my_value = sub['properties'].select {|x| x['name'] == "product_collection"}
+        puts "::::::::::::::::::"
+        puts my_value.inspect
+        puts "::::::::::::::::::"
+        my_product_collection  = nil
+        if sub['properties']&.select { |x| x['name'] == "product_collection"} != nil && sub['properties']&.select { |x| x['name'] == "product_collection"} != []
+          my_product_collection = sub['properties'].select { |x| x['name'] == "product_collection"}.first['value']
+        end
         #puts "my_product_collection = #{my_product_collection.inspect}"
         local_sub = {
             subscription_id: sub['id'],
