@@ -1,44 +1,54 @@
-<h1>Select Size Breaks</h1>
-<hr>
-
 <div class="container">
-<p>Some text here</p>
+  <div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card card-signin my-5">
+        <div class="card-body">
+          <h5 class="card-title text-center">Select Size Breaks</h5>
+          <% @size_array = ['XS', 'S', 'M', 'L', 'XL'].freeze %>
 
-<% @size_array = ['XS', 'S', 'M', 'L', 'XL'].freeze %>
+          <%= form_for :size_break, url: "size_breaks/create" do |form| %>
 
-<%= form_for :size_break, url: "size_breaks/create" do |form| %>
+          <form>
+            <div class="row">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="First name">
+                <%= form.check_box(:use_size_breaks) %>
+                <%= form.label(:use_size_breaks, "Use Size Breaks") %><br>
 
-  <%= form.check_box(:use_size_breaks) %>
-  <%= form.label(:use_size_breaks, "Use Size Breaks") %><br>
+                <%= form.select :product_type1, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+                <%= form.label :product_type1, "Product Type 1" %><br>
+                <% @size_array.each do |sa| %>
+                <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+                <% end %>
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Last name">
+              <%= form.select :product_type2, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+              <%= form.label :product_type2, "Product Type 2" %><br>
+              <% @size_array.each do |sa| %>
+              <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+              <% end %>
 
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Last name">
+                <%= form.select :product_type3, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+                <%= form.label :product_type3, "Product Type 3" %><br>
+                <% @size_array.each do |sa| %>
+                <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
+                <% end %>
+              </div>
+              <div class="col">
+               <%= form.select :two_item_exclude, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
+                <%= form.label :two_item_exclude, "Two Item Exclude" %><br>
+              </div>
+            </div>
+          </form>
+          <%= form.submit  %>
+          <% end  %>
 
-  <%= form.select :product_type1, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
-  <%= form.label :product_type1, "Product Type 1" %><br>
-  <% @size_array.each do |sa| %>
-  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
-  <% end %>
-  
-  <%= form.select :product_type2, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
-  <%= form.label :product_type2, "Product Type 2" %><br>
-  <% @size_array.each do |sa| %>
-  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
-  <% end %>
-
-  <%= form.select :product_type3, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
-  <%= form.label :product_type3, "Product Type 3" %><br>
-  <% @size_array.each do |sa| %>
-  <%= sa %> <%= form.number_field(:inventory_avail, in: 0..10000, step: 1) %><br>
-  <% end %>
-
- <%= form.select :two_item_exclude, [['leggings', 0], ['tops', 1], ['sports-bra', 2], ['sports-jacket', 3], ['gloves', 4]] %>
-  <%= form.label :two_item_exclude, "Two Item Exclude" %><br>
-  
-  
-  
-  <%= form.submit  %>
-
-        
-  
-<% end  %>
-
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

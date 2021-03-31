@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :recharge_orders, only: :index
 
   resources :selection_sets, only: [:index, :new, :create, :show]
+  resources :size_breaks, only: [:index]
 
   mount Resque::Server.new, :at => "/resque"
 end
