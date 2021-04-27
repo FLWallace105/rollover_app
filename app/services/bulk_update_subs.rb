@@ -4,7 +4,7 @@ module BulkUpdateSubs
 
     def self.setup_update_subs
         puts "starting bulk updating"
-        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid, product_collection) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid, subscriptions.product_collection from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and next_charge_scheduled_at > '2021-04-02' and next_charge_scheduled_at < '2021-05-01' and (subscriptions.product_collection not ilike 'spring%fling%' and subscriptions.product_collection not ilike 'after%storm%' and subscriptions.product_collection not ilike 'sassy%sol%' and subscriptions.product_collection not ilike 'stargazer%' and subscriptions.product_collection not ilike 'north%sea%' and subscriptions.product_collection not ilike 'royal%flush%'  and subscriptions.product_collection not ilike 'pacific%crush%' and subscriptions.product_collection not ilike 'ellie%pick%' )"
+        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid, product_collection) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid, subscriptions.product_collection from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and (sub_collection_sizes.sports_jacket is null or sub_collection_sizes.sports_bra is null or sub_collection_sizes.gloves is null or sub_collection_sizes.tops is null ) "
 
         SubscriptionsUpdated.delete_all
         #Now reset index
@@ -159,33 +159,42 @@ module BulkUpdateSubs
             shopify_variant_id = my_update_info.shopify_variant_id
             product_collection = my_update_info.product_collection
             temp_properties = temps.properties
-            temp_properties.map do |x|
-                if x['name'] == "product_collection"
-                    x['value'] = product_collection
-                end
+            #temp_properties.map do |x|
+            #    if x['name'] == "product_collection"
+            #        x['value'] = product_collection
+            #    end
 
-            end
+            #end
 
-            send_to_recharge = { "sku" => sku, "product_title" => product_title, "shopify_product_id" => shopify_product_id, "shopify_variant_id" => shopify_variant_id, "properties" => temp_properties }
+            size_properties = SizeAdder.add_size_sub_properties(temps.properties)
+
+            #send_to_recharge = { "sku" => sku, "product_title" => product_title, "shopify_product_id" => shopify_product_id, "shopify_variant_id" => shopify_variant_id, "properties" => temp_properties }
+            send_to_recharge = { "properties" => size_properties}
 
             puts "----------------------------"
             puts "send_to_recharge = #{send_to_recharge.inspect}"
             puts "-----------------------------"
-            temp_json = {
-                "body": {
-                "address_id": temp_address_id,
-                "subscriptions": [
-                    {
-                      "id": temp_subscription_id,
-                      "sku": sku,
-                      "product_title": product_title,
-                      "shopify_product_id": shopify_product_id,
-                      "shopify_variant_id": shopify_variant_id,
-                      "properties": temp_properties
-                    }
-                  ]
-                }
-            }
+            #temp_json = {
+            #    "body": {
+            #    "address_id": temp_address_id,
+            #    "subscriptions": [
+            #        {
+            #          "id": temp_subscription_id,
+            #          "sku": sku,
+            #          "product_title": product_title,
+            #          "shopify_product_id": shopify_product_id,
+            #           "shopify_variant_id": shopify_variant_id,
+            #          "properties": temp_properties
+            #        }
+            #      ]
+            #    }
+            #}
+            
+            temp_json = SizeAdder.create_size_json(temp_address_id, temp_subscription_id, size_properties)
+            puts temp_json
+            
+            
+
             temp_tasks.push(temp_json)
             mycount += 1
             temps.pushed_to_batch_request = true
