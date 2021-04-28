@@ -64,5 +64,28 @@ class SizeAdder
     end
 
 
+    def self.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id,temp_properties)
+
+        temp_json = {
+                "body": {
+                "address_id": temp_address_id,
+                "subscriptions": [
+                    {
+                      "id": temp_subscription_id,
+                      "sku": sku,
+                      "product_title": product_title,
+                      "shopify_product_id": shopify_product_id,
+                       "shopify_variant_id": shopify_variant_id,
+                      "properties": temp_properties
+                    }
+                  ]
+                }
+            }
+        return temp_json
+
+
+    end
+
+
 
 end
