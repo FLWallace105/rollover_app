@@ -7,10 +7,10 @@ class AlternateProductsBuilder
     ShopifyAPI::Base.api_version = '2020-04'
     ShopifyAPI::Base.timeout = 180
 
-    next_month_name = Date.today.next_month.strftime("%B").downcase
-    year = next_month_name == 'january' ? Date.today.next_year.strftime("%Y") : Date.today.strftime("%Y")
+    this_month_name = Date.today.strftime("%B").downcase
+    year = Date.today.strftime("%Y")
 
-    my_collection = "select collection_id from shopify_custom_collections where handle ilike '#{next_month_name}%#{year}%collection%' "
+    my_collection = "select collection_id from shopify_custom_collections where handle ilike '#{this_month_name}%#{year}%collection%' "
 
     collection_info = ActiveRecord::Base.connection.execute(my_collection).first
     collection_id = collection_info['collection_id']

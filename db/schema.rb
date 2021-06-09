@@ -10,10 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_29_003325) do
+ActiveRecord::Schema.define(version: 2021_06_02_185805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "allocation_collections", force: :cascade do |t|
+    t.string "name"
+    t.bigint "collection_id"
+    t.bigint "product_id"
+  end
+
+  create_table "allocation_matching_products", force: :cascade do |t|
+    t.string "product_title"
+    t.string "incoming_product_id"
+    t.string "outgoing_product_id"
+    t.integer "prod_type"
+  end
+
+  create_table "allocation_size_types", force: :cascade do |t|
+    t.string "collection_name"
+    t.integer "collection_id"
+    t.string "collection_size_type"
+  end
 
   create_table "alternate_products", force: :cascade do |t|
     t.string "product_title"
