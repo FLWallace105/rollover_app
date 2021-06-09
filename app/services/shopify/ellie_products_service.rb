@@ -6,7 +6,7 @@ module Shopify
     DEFAULT_ENTRIES = 20
     DEFAULT_METAFIELD_NAMESPACE = 'ellie_order_info'
     MINIMUM_COST_ALLOWED = 322
-    GRAPHQL_SLEEP_TIME = ENV['graphql_sleep_time'].to_i
+    GRAPHQL_SLEEP_TIME = Rails.application.credentials[:graphql_sleep_time].to_i
 
     class << self
       def fetch(extra_options: nil)
