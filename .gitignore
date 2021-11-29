@@ -40,3 +40,5 @@ yarn-debug.log*
 .ruby-gemset
 
 .env
+
+/config/credentials/production.key
