@@ -264,6 +264,20 @@ module BulkUpdateSubs
 
     end
 
+    def self.terminate_task_process(batch_id)
+        #PUT /async_batches/:batch_id
+
+        body = {
+        "status": "terminated"
+        }
+        url = "#{BASE_URI}/async_batches/#{batch_id}"
+        response = HttpartyService.put(url, {}, body)
+        puts response.inspect
+
+
+
+    end
+
     def self.get_task_info(batch_id)
         
         

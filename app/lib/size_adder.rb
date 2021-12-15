@@ -73,6 +73,7 @@ class SizeAdder
                     {
                       "id": temp_subscription_id,
                       "sku": sku,
+                      "status": "ACTIVE",
                       "product_title": product_title,
                       "shopify_product_id": shopify_product_id,
                        "shopify_variant_id": shopify_variant_id,
