@@ -12,14 +12,14 @@ module RechargeSubCache
         ActiveRecord::Base.connection.reset_pk_sequence!('sub_collection_sizes')
         page_size = 250
         url = "#{BASE_URI}/subscriptions/count"
-        query = { status: 'CANCELLED' }
+        query = { status: 'ACTIVE' }
         response = HttpartyService.get(url, {}, query)
         subs_response = HttpartyService.parse_response(response)
         puts subs_response.inspect
         num_subs = subs_response['count'].to_i
         num_pages = (num_subs / page_size.to_f).ceil
 
-        new_query = {status: 'CANCELLED', limit: page_size }
+        new_query = {status: 'ACTIVE', limit: page_size }
      
 
       1.upto(num_pages) do |page|

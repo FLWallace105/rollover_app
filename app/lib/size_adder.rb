@@ -88,5 +88,32 @@ class SizeAdder
     end
 
 
+    def self.create_update_date_json(temp_address_id, temp_subscription_id)
+        my_integer = rand(5..30)
+        my_str = ""
+        if my_integer < 10
+            my_str = "0#{my_integer}"
+        else
+            my_str = "#{my_integer}"
+        end
+        my_date = "2022-01-#{my_str}"
+
+        temp_json = {
+            "body": {
+            "address_id": temp_address_id,
+            "subscriptions": [
+                {
+                  "id": temp_subscription_id,
+                  "next_charge_scheduled_at": my_date
+                }
+              ]
+            }
+        }
+    return temp_json
+
+
+    end
+
+
 
 end
