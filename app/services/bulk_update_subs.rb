@@ -25,9 +25,9 @@ module BulkUpdateSubs
         #UpdateProduct.create(product_title: 'Ellie Picks - 3 Items', sku: '79999999999', shopify_product_id: 4399742746682, shopify_variant_id: 31328301121594, product_collection: 'Ellie Picks - 3 Items', created_at: now, updated_at: now )
         #UpdateProduct.create(product_title: 'Ellie Picks - 5 Items', sku: '79999999998', shopify_product_id: 4399742910522, shopify_variant_id: 31328301482042, product_collection: 'Ellie Picks - 5 Items', created_at: now, updated_at: now )
 
-        UpdateProduct.create(product_title: 'Boss Gloss - 2 Items', sku: '745934962719', shopify_product_id: 7152720740513, shopify_variant_id: 41301261156513, product_collection: 'Boss Gloss - 2 Items', created_at: now, updated_at: now)
-        UpdateProduct.create(product_title: 'Boss Gloss - 3 Items', sku: '745934962726', shopify_product_id: 7152721035425, shopify_variant_id: 41301261615265, product_collection: 'Boss Gloss - 3 Items ', created_at: now, updated_at: now )
-        UpdateProduct.create(product_title: 'Boss Gloss - 5 Items', sku: '745934962733', shopify_product_id: 7152721395873, shopify_variant_id: 41301262368929, product_collection: 'Boss Gloss - 5 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Blush Babe - 2 Items', sku: '719408144383', shopify_product_id: 7257109594273, shopify_variant_id: 41562337542305, product_collection: 'Blush Babe - 2 Items', created_at: now, updated_at: now)
+        UpdateProduct.create(product_title: 'Blush Babe - 3 Items', sku: '719408144390', shopify_product_id: 7257115230369, shopify_variant_id: 41562354090145, product_collection: 'Blush Babe - 3 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Blush Babe - 5 Items', sku: '719408144406', shopify_product_id: 7257115820193, shopify_variant_id: 41562356613281, product_collection: 'Blush Babe - 5 Items', created_at: now, updated_at: now )
 
 
 
@@ -46,15 +46,15 @@ module BulkUpdateSubs
 
             case my_title
             when /\s2\sitem/i
-                next_month_prod_id = 7152720740513
+                next_month_prod_id = 7257109594273
             when /\s3\sitem/i
-                next_month_prod_id = 7152721035425
+                next_month_prod_id = 7257115230369
             when /\s5\sitem/i
-                next_month_prod_id = 7152721395873
+                next_month_prod_id = 7257115820193
             when "3 MONTHS"
-                next_month_prod_id = 7152721395873
+                next_month_prod_id = 7257115820193
             else
-                next_month_prod_id = 7152721395873
+                next_month_prod_id = 7257115820193
             end
             CurrentProduct.create(prod_id_key: my_title, prod_id_value: my_prod_id, next_month_prod_id: next_month_prod_id, prepaid: false, created_at: now, updated_at: now )
 
@@ -198,8 +198,8 @@ module BulkUpdateSubs
             #}
             
             #temp_json = SizeAdder.create_size_json(temp_address_id, temp_subscription_id, size_properties)
-            #temp_json = SizeAdder.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id, temp_properties )
-            temp_json = SizeAdder.create_update_date_json(temp_address_id, temp_subscription_id)
+            temp_json = SizeAdder.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id, temp_properties )
+            #temp_json = SizeAdder.create_update_date_json(temp_address_id, temp_subscription_id)
             
             puts temp_json
             
