@@ -72,6 +72,7 @@ class SizeAdder
                 "subscriptions": [
                     {
                       "id": temp_subscription_id,
+                      "next_charge_scheduled_at": "2022-03-31",
                       "sku": sku,
                       "status": "ACTIVE",
                       "product_title": product_title,
@@ -104,7 +105,7 @@ class SizeAdder
             "subscriptions": [
                 {
                   "id": temp_subscription_id,
-                  "next_charge_scheduled_at": my_date
+                  "next_charge_scheduled_at": "2022-03-31"
                 }
               ]
             }
