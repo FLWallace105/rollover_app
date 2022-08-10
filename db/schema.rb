@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_24_195058) do
+ActiveRecord::Schema.define(version: 2022_08_09_213423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -236,6 +236,13 @@ ActiveRecord::Schema.define(version: 2021_03_24_195058) do
     t.index ["subscription_id"], name: "index_sub_collection_sizes_on_subscription_id"
   end
 
+  create_table "sub_raw_skus", force: :cascade do |t|
+    t.string "subscription_id"
+    t.datetime "next_charge_scheduled_at"
+    t.boolean "prepaid", default: false
+    t.string "sku"
+  end
+
   create_table "subscription_updated_recharge", force: :cascade do |t|
     t.bigint "subscription_id"
     t.bigint "customer_id"
@@ -287,6 +294,7 @@ ActiveRecord::Schema.define(version: 2021_03_24_195058) do
     t.integer "max_retries_reached"
     t.boolean "sku_override", default: false
     t.string "product_collection"
+    t.boolean "is_mix_match", default: false
     t.index ["subscription_id"], name: "index_subscriptions_on_subscription_id"
   end
 

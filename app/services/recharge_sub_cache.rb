@@ -115,6 +115,23 @@ module RechargeSubCache
         if sub['properties']&.select { |x| x['name'] == "product_collection"} != nil && sub['properties']&.select { |x| x['name'] == "product_collection"} != []
           my_product_collection = sub['properties'].select { |x| x['name'] == "product_collection"}.first['value']
         end
+        # ------- Floyd Wallace Add Mix and Match property boolean -----------
+        temp_mix_array = sub['properties'].select {|property| property['name'] == 'is_mix_and_match_order'} 
+        mix_match_boolean  = false
+        if temp_mix_array != []
+          mix_match_boolean = my_bool_true?(temp_mix_array.first['value'])
+        else
+          mix_match_boolean = false
+        end
+
+        if mix_match_boolean == false && sub['properties'].select {|property| property['name'] == 'raw_skus'} != []
+          #i.e. there is some raw sku there not scrubbed yet
+          mix_match_boolean = true
+
+        end
+
+
+
         #puts "my_product_collection = #{my_product_collection.inspect}"
         local_sub = {
             subscription_id: sub['id'],
@@ -146,12 +163,16 @@ module RechargeSubCache
             sku: sub['sku'],
             sku_override: sub['sku_override'],
             variant_title: sub['variant_title'],
-            product_collection: my_product_collection        
+            product_collection: my_product_collection,
+            is_mix_match: mix_match_boolean      
         }
         return local_sub
     end   
     
 
+    def self.my_bool_true?(obj)
+      obj.to_s.downcase == "true"
+    end
     
 
 

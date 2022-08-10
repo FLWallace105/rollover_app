@@ -4,7 +4,7 @@ module BulkUpdateSubs
 
     def self.setup_update_subs
         puts "starting bulk updating"
-        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid, product_collection) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid, subscriptions.product_collection from subscriptions, sub_collection_sizes where sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' limit 20"
+        my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid, product_collection) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid, subscriptions.product_collection from subscriptions, sub_collection_sizes where sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\' and subscriptions.is_mix_match = \'t\' limit 20"
 
         #my_sql  = "insert into subscriptions_updated (subscription_id, customer_id, address_id, updated_at, created_at,  next_charge_scheduled_at, product_title, status, sku, shopify_product_id, shopify_variant_id, properties, is_prepaid, product_collection) select subscriptions.subscription_id, subscriptions.customer_id, subscriptions.address_id, subscriptions.updated_at, subscriptions.created_at, subscriptions.next_charge_scheduled_at, subscriptions.product_title, subscriptions.status, subscriptions.sku, subscriptions.shopify_product_id, subscriptions.shopify_variant_id, subscriptions.properties, subscriptions.is_prepaid, subscriptions.product_collection from subscriptions, sub_collection_sizes where subscriptions.status = 'ACTIVE'  and sub_collection_sizes.subscription_id = subscriptions.subscription_id and subscriptions.is_prepaid = \'f\'  and (sub_collection_sizes.tops is null or sub_collection_sizes.leggings is null or sub_collection_sizes.sports_bra is null or sub_collection_sizes.sports_jacket is null) "
 
@@ -25,9 +25,9 @@ module BulkUpdateSubs
         #UpdateProduct.create(product_title: 'Ellie Picks - 3 Items', sku: '79999999999', shopify_product_id: 4399742746682, shopify_variant_id: 31328301121594, product_collection: 'Ellie Picks - 3 Items', created_at: now, updated_at: now )
         #UpdateProduct.create(product_title: 'Ellie Picks - 5 Items', sku: '79999999998', shopify_product_id: 4399742910522, shopify_variant_id: 31328301482042, product_collection: 'Ellie Picks - 5 Items', created_at: now, updated_at: now )
 
-        UpdateProduct.create(product_title: 'Blush Babe - 2 Items', sku: '719408144383', shopify_product_id: 7257109594273, shopify_variant_id: 41562337542305, product_collection: 'Blush Babe - 2 Items', created_at: now, updated_at: now)
-        UpdateProduct.create(product_title: 'Blush Babe - 3 Items', sku: '719408144390', shopify_product_id: 7257115230369, shopify_variant_id: 41562354090145, product_collection: 'Blush Babe - 3 Items', created_at: now, updated_at: now )
-        UpdateProduct.create(product_title: 'Blush Babe - 5 Items', sku: '719408144406', shopify_product_id: 7257115820193, shopify_variant_id: 41562356613281, product_collection: 'Blush Babe - 5 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Winged Beauty - 2 Items', sku: '719408188219', shopify_product_id: 7372149325985, shopify_variant_id: 41944016388257, product_collection: 'Winged Beauty - 2 Items', created_at: now, updated_at: now)
+        UpdateProduct.create(product_title: 'Winged Beauty - 3 Items', sku: '719408188226', shopify_product_id: 7372149293217, shopify_variant_id: 41944016322721, product_collection: 'Winged Beauty - 3 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Winged Beauty - 5 Items', sku: '719408188233', shopify_product_id: 7372149260449, shopify_variant_id: 41944016289953, product_collection: 'Winged Beauty - 5 Items', created_at: now, updated_at: now )
 
 
 
@@ -46,15 +46,15 @@ module BulkUpdateSubs
 
             case my_title
             when /\s2\sitem/i
-                next_month_prod_id = 7257109594273
+                next_month_prod_id = 7372149325985
             when /\s3\sitem/i
-                next_month_prod_id = 7257115230369
+                next_month_prod_id = 7372149293217
             when /\s5\sitem/i
-                next_month_prod_id = 7257115820193
+                next_month_prod_id = 7372149260449
             when "3 MONTHS"
-                next_month_prod_id = 7257115820193
+                next_month_prod_id = 7372149260449
             else
-                next_month_prod_id = 7257115820193
+                next_month_prod_id = 7372149260449
             end
             CurrentProduct.create(prod_id_key: my_title, prod_id_value: my_prod_id, next_month_prod_id: next_month_prod_id, prepaid: false, created_at: now, updated_at: now )
 
@@ -198,12 +198,13 @@ module BulkUpdateSubs
             #}
             
             #temp_json = SizeAdder.create_size_json(temp_address_id, temp_subscription_id, size_properties)
-            temp_json = SizeAdder.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id, temp_properties )
+            #temp_json = SizeAdder.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id, temp_properties )
+            temp_json = MixMatchScrubber.scrub_mix_match(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id, temp_properties )
             #temp_json = SizeAdder.create_update_date_json(temp_address_id, temp_subscription_id)
             
             puts temp_json
             
-            #exit
+            
             
             
             
