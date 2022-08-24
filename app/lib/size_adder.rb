@@ -1,6 +1,6 @@
 class SizeAdder
 
-    VALID_PROPS = ["leggings", "tops", "sports-jacket", "sports-bra", "gloves", "product_collection", "real_email", "unique_identifier"]
+    
 
     def self.add_size_sub_properties(properties)
 
@@ -42,7 +42,7 @@ class SizeAdder
             end
         end
 
-        properties.delete_if {|x| !VALID_PROPS.include?(x['name']) }
+        
         
         return properties
 
