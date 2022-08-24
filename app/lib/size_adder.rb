@@ -1,5 +1,7 @@
 class SizeAdder
 
+    VALID_PROPS = ["leggings", "tops", "sports-jacket", "sports-bra", "gloves", "product_collection", "real_email", "unique_identifier"]
+
     def self.add_size_sub_properties(properties)
 
         leggings = properties.select{|x| x['name'] == 'leggings'}
@@ -65,6 +67,9 @@ class SizeAdder
 
 
     def self.create_update_json(temp_address_id, temp_subscription_id, sku, product_title, shopify_product_id, shopify_variant_id,temp_properties)
+
+        temp_properties.delete_if {|x| !VALID_PROPS.include?(x['name']) }
+
 
         temp_json = {
                 "body": {
