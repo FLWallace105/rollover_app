@@ -21,13 +21,13 @@ module BulkUpdateSubs
 
         #Boss Babe exists in Recharge, use that for set up
         
-        #UpdateProduct.create(product_title: 'Ellie Picks - 2 Items', sku: '79999999997', shopify_product_id: 4399742615610, shopify_variant_id: 31328301023290, product_collection: 'Ellie Picks - 2 Items', created_at: now, updated_at: now)
-        #UpdateProduct.create(product_title: 'Ellie Picks - 3 Items', sku: '79999999999', shopify_product_id: 4399742746682, shopify_variant_id: 31328301121594, product_collection: 'Ellie Picks - 3 Items', created_at: now, updated_at: now )
-        #UpdateProduct.create(product_title: 'Ellie Picks - 5 Items', sku: '79999999998', shopify_product_id: 4399742910522, shopify_variant_id: 31328301482042, product_collection: 'Ellie Picks - 5 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Ellie Picks - 2 Items', sku: '79999999997', shopify_product_id: 4399742615610, shopify_variant_id: 31328301023290, product_collection: 'Ellie Picks - 2 Items', created_at: now, updated_at: now)
+        UpdateProduct.create(product_title: 'Ellie Picks - 3 Items', sku: '79999999999', shopify_product_id: 4399742746682, shopify_variant_id: 31328301121594, product_collection: 'Ellie Picks - 3 Items', created_at: now, updated_at: now )
+        UpdateProduct.create(product_title: 'Ellie Picks - 5 Items', sku: '79999999998', shopify_product_id: 4399742910522, shopify_variant_id: 31328301482042, product_collection: 'Ellie Picks - 5 Items', created_at: now, updated_at: now )
 
-        UpdateProduct.create(product_title: 'Winged Beauty - 2 Items', sku: '719408188219', shopify_product_id: 7372149325985, shopify_variant_id: 41944016388257, product_collection: 'Winged Beauty - 2 Items', created_at: now, updated_at: now)
-        UpdateProduct.create(product_title: 'Winged Beauty - 3 Items', sku: '719408188226', shopify_product_id: 7372149293217, shopify_variant_id: 41944016322721, product_collection: 'Winged Beauty - 3 Items', created_at: now, updated_at: now )
-        UpdateProduct.create(product_title: 'Winged Beauty - 5 Items', sku: '719408188233', shopify_product_id: 7372149260449, shopify_variant_id: 41944016289953, product_collection: 'Winged Beauty - 5 Items', created_at: now, updated_at: now )
+        # UpdateProduct.create(product_title: 'Winged Beauty - 2 Items', sku: '719408188219', shopify_product_id: 7372149325985, shopify_variant_id: 41944016388257, product_collection: 'Winged Beauty - 2 Items', created_at: now, updated_at: now)
+        # UpdateProduct.create(product_title: 'Winged Beauty - 3 Items', sku: '719408188226', shopify_product_id: 7372149293217, shopify_variant_id: 41944016322721, product_collection: 'Winged Beauty - 3 Items', created_at: now, updated_at: now )
+        # UpdateProduct.create(product_title: 'Winged Beauty - 5 Items', sku: '719408188233', shopify_product_id: 7372149260449, shopify_variant_id: 41944016289953, product_collection: 'Winged Beauty - 5 Items', created_at: now, updated_at: now )
 
 
 
@@ -46,15 +46,15 @@ module BulkUpdateSubs
 
             case my_title
             when /\s2\sitem/i
-                next_month_prod_id = 7372149325985
+                next_month_prod_id = 4399742615610
             when /\s3\sitem/i
-                next_month_prod_id = 7372149293217
+                next_month_prod_id = 4399742746682
             when /\s5\sitem/i
-                next_month_prod_id = 7372149260449
+                next_month_prod_id = 4399742910522
             when "3 MONTHS"
-                next_month_prod_id = 7372149260449
+                next_month_prod_id = 4399742910522
             else
-                next_month_prod_id = 7372149260449
+                next_month_prod_id = 4399742910522
             end
             CurrentProduct.create(prod_id_key: my_title, prod_id_value: my_prod_id, next_month_prod_id: next_month_prod_id, prepaid: false, created_at: now, updated_at: now )
 
